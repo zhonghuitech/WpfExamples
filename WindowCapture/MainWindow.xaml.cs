@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WindowCapture.ScreenSelect;
 
 namespace WindowCapture
 {
@@ -19,6 +20,14 @@ namespace WindowCapture
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void ScreenRecordRectCallback(object sender, RoutedEventArgs e)
+        {
+            // this.Hide();
+            App.Current.MainWindow.WindowState = System.Windows.WindowState.Minimized;
+            // ScreenWindow screenWindow = new ScreenWindow();
+            new ScreenReactSelect().Capture();
         }
     }
 }
