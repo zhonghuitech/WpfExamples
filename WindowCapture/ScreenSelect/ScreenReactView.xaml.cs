@@ -72,7 +72,7 @@ namespace WindowCapture.ScreenSelect
         public ScreenReactView(MainWindow mainWnd)
         {
             this.mainWnd = mainWnd;
-            System.Drawing.Size size = WindowHelper.GetMonitorSize();
+            Size size = WindowHelper.GetMonitorSize();
             
             screenDPI = GetScreenDPI();
             InitializeComponent();

@@ -5,7 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WindowCapture"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        ResizeMode="CanMinimize"
+        WindowStartupLocation="CenterScreen"
+        Title="WpfExamples" Height="200" Width="450">
     <Window.Resources>
         <Style x:Key="ImageEnabled" TargetType="Image">
             <Style.Triggers>
