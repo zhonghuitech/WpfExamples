@@ -26,8 +26,7 @@ namespace WindowCapture
         {
             // this.Hide();
             App.Current.MainWindow.WindowState = System.Windows.WindowState.Minimized;
-            // ScreenWindow screenWindow = new ScreenWindow();
-            new ScreenReactSelect().Capture();
+            new ScreenReactSelect(this).Capture();
         }
     }
 }

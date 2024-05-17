@@ -5,8 +5,112 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WindowCapture.ScreenSelect"
         mc:Ignorable="d"
-        Title="ScreenReactView" Height="450" Width="800">
+        WindowState="Maximized"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        WindowStartupLocation="CenterScreen"
+        Background="Transparent"
+        Height="450" Width="800" Title="ScreenReactWindow">
+    <Window.Resources>
+        <Style x:Key="ImageEnabled" TargetType="Image">
+            <Setter Property="Width" Value="18"/>
+            <Setter Property="Margin" Value="5,0,5,0"/>
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.25"></Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <SolidColorBrush x:Key="BlackSolidColorBrush" Color="#000000" />
+        <SolidColorBrush x:Key="BackgroundSolidColorBrush" Color="#323232"/>
+        <SolidColorBrush x:Key="PrimaryNormalSolidColorBrush" Color="#409EFF"/>
+
+        <Style x:Key="ScreenCutRectangleStyle" TargetType="{x:Type Rectangle}">
+            <Setter Property="Fill" Value="{DynamicResource BlackSolidColorBrush}" />
+            <Setter Property="Opacity" Value=".3" />
+        </Style>
+
+        <DropShadowEffect
+            x:Key="PopupShadowDepth"
+            BlurRadius="12"
+            Opacity="0.1"
+            ShadowDepth="2"
+            Color="#000000" />
+
+        <Style x:Key="BaseButton"
+            TargetType="{x:Type ButtonBase}">
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="FrameworkElement.OverridesDefaultStyle" Value="True" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <!--<Setter Property="helpers:ElementHelper.CornerRadius" Value="3" />-->
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="6" />
+        </Style>
+
+        <Style x:Key="PathButton"
+            BasedOn="{StaticResource BaseButton}"
+            TargetType="{x:Type Button}">
+            <Setter Property="Padding" Value="8" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="Transparent">
+                            <ContentPresenter
+                                x:Name="PART_ContentPresenter"
+                                Margin="{TemplateBinding Padding}"
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                Opacity=".8" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="PART_ContentPresenter" Property="Opacity" Value="1" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
     <Grid>
-        
+        <Canvas x:Name="canvas"
+                Width="{Binding Source={x:Static SystemParameters.PrimaryScreenWidth}}"
+                Height="{Binding Source={x:Static SystemParameters.PrimaryScreenHeight}}">
+
+            <Rectangle x:Name="_rectangleLeft" Style="{DynamicResource ScreenCutRectangleStyle}" />
+            <Rectangle x:Name="_rectangleTop" Style="{DynamicResource ScreenCutRectangleStyle}" />
+            <Rectangle x:Name="_rectangleRight" Style="{DynamicResource ScreenCutRectangleStyle}" />
+            <Rectangle x:Name="_rectangleBottom" Style="{DynamicResource ScreenCutRectangleStyle}" />
+
+            <Border x:Name="_border" Background="Transparent" 
+                    BorderBrush="{DynamicResource PrimaryNormalSolidColorBrush}"
+                    BorderThickness="2" Cursor="SizeAll" 
+                    MouseLeftButtonDown="Border_MouseLeftButtonDown"/>
+            <Border x:Name="rectInfo" Visibility="Hidden"  Panel.ZIndex="98" 
+                    Background="Transparent"
+                    Effect="{StaticResource PopupShadowDepth}">
+                <TextBlock x:Name="rectInfoText" Foreground="White" Background="Transparent" Text="" 
+                           />
+            </Border>
+            <Border x:Name="_editBar" Panel.ZIndex="99" 
+                    Background="{DynamicResource BackgroundSolidColorBrush}"
+                    Effect="{StaticResource PopupShadowDepth}"
+                    Visibility="Hidden">
+                <WrapPanel Margin="10,5" VerticalAlignment="Center">
+                    <Button x:Name="_buttonCancel" Margin="4,0"
+                            Style="{DynamicResource PathButton}" ToolTip="Cancel"
+                            Click="ButtonCancel_Click">
+                        <Image Source="\Resources\cancel.png" Style="{StaticResource ImageEnabled}" />
+                    </Button>
+                    <Button x:Name="_buttonComplete" Margin="4,0" 
+                            Style="{DynamicResource PathButton}" ToolTip="OK"
+                            Click="ButtonComplete_Click">
+                        <Image Source="\Resources\ok.png" Style="{StaticResource ImageEnabled}" Width="25"/>
+                    </Button>
+                </WrapPanel>
+            </Border>
+        </Canvas>
     </Grid>
 </Window>
