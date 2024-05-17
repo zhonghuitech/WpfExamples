@@ -7,19 +7,20 @@ namespace WindowCapture
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow 
+    public partial class MainWindow : Window
     {
+        private readonly MainViewModel _vm = new MainViewModel();
+
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = _vm;
         }
 
         private IntPtr _myHandle;
         protected override void OnSourceInitialized(EventArgs e)
         {
-           
             base.OnSourceInitialized(e);
-
             _myHandle = new WindowInteropHelper(this).Handle;
             //组合键
             var ctrHotKey = (uint)(HotKey.KeyModifiers.Alt | HotKey.KeyModifiers.Control);
@@ -53,8 +54,8 @@ namespace WindowCapture
         {   
             // this.Hide();
             App.Current.MainWindow.WindowState = WindowState.Minimized;
-            Thread.Sleep(150);
-            new ScreenReactSelect(this).Capture();
+            Thread.Sleep(150);  // 待当前窗口最小化
+            new ScreenReactSelect(this, _vm).Capture();
         }
     }
 }

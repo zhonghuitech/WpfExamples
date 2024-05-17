@@ -10,10 +10,12 @@ namespace WindowCapture.ScreenSelect
     public class ScreenReactSelect
     {
         private MainWindow mainWnd;
+        private MainViewModel vm;
 
-        public ScreenReactSelect(MainWindow mainWindow)
+        public ScreenReactSelect(MainWindow mainWindow, MainViewModel vm)
         {
             this.mainWnd = mainWindow;
+            this.vm = vm;
         }
 
         public void Capture()
@@ -36,6 +38,7 @@ namespace WindowCapture.ScreenSelect
 
         private void ScreenCaptureCompleted(int x, int y, int w, int h)
         {
+            this.vm.ShowMessage = string.Format("录屏区域设置完成：（{2}, {3}），宽*高：{0}x{1}", w, h, x, y);
             mainWnd.Show();
             mainWnd.Activate();
             mainWnd.WindowState = WindowState.Normal;
