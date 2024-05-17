@@ -33,7 +33,7 @@ namespace WindowCapture.ScreenSelect
 
         private void ScreenCaptureCanceled()
         {
-            //Canceled
+            // Canceled
         }
 
         private void ScreenCaptureCompleted(int x, int y, int w, int h)

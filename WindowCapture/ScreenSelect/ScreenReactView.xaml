@@ -88,11 +88,9 @@
                     BorderBrush="{DynamicResource PrimaryNormalSolidColorBrush}"
                     BorderThickness="2" Cursor="SizeAll" 
                     MouseLeftButtonDown="Border_MouseLeftButtonDown"/>
-            <Border x:Name="rectInfo" Visibility="Hidden"  Panel.ZIndex="98" 
-                    Background="Transparent"
+            <Border x:Name="rectInfo" Visibility="Hidden"  Panel.ZIndex="98" Background="Transparent"
                     Effect="{StaticResource PopupShadowDepth}">
-                <TextBlock x:Name="rectInfoText" Foreground="White" Background="Transparent" Text="" 
-                           />
+                <TextBlock x:Name="rectInfoText" Foreground="White" Background="Transparent" Text="" />
             </Border>
             <Border x:Name="_editBar" Panel.ZIndex="99" 
                     Background="{DynamicResource BackgroundSolidColorBrush}"

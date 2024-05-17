@@ -22,7 +22,6 @@ namespace WindowCapture
         {
             base.OnSourceInitialized(e);
             _myHandle = new WindowInteropHelper(this).Handle;
-            //组合键
             var ctrHotKey = (uint)(HotKey.KeyModifiers.Alt | HotKey.KeyModifiers.Control);
             // Alt+CTRL+4
             HotKey.RegisterHotKey(_myHandle, 103, (HotKey.KeyModifiers)ctrHotKey, (int)HotKey.KeyModifiers.N4);
