@@ -46,7 +46,6 @@ namespace WindowCapture
 
         private void ScreenRecordRectCallback(object sender, RoutedEventArgs e)
         {
-         
             ScreenRectSelect();
         }
 
@@ -54,7 +53,7 @@ namespace WindowCapture
         {   
             // this.Hide();
             App.Current.MainWindow.WindowState = WindowState.Minimized;
-            //Thread.Sleep(150);
+            Thread.Sleep(150);
             new ScreenReactSelect(this).Capture();
         }
     }

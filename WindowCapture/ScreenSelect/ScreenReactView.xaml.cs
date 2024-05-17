@@ -71,7 +71,6 @@ namespace WindowCapture.ScreenSelect
 
         public ScreenReactView(MainWindow mainWnd)
         {
-            this.mainWnd = mainWnd;
             Size size = WindowHelper.GetMonitorSize();
             
             screenDPI = GetScreenDPI();
@@ -82,7 +81,6 @@ namespace WindowCapture.ScreenSelect
             _rectangleLeft.Width = canvas.Width;
             _rectangleLeft.Height = canvas.Height;
             ratio = (size.Width / canvas.Width);
-            // StarEventBus.Raise(new MessageEvent("width:" + size.Width + " canvas:" + canvas.Width + ", ratio:" + (size.Width/canvas.Width)));
             _border.Opacity = 0;
             this.mainWnd = mainWnd;
         }
