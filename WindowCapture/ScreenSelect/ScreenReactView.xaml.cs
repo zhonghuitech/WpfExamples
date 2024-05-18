@@ -91,6 +91,7 @@ namespace WindowCapture.ScreenSelect
 
         private ScreenDPI screenDPI;
         private double ratio = 1;
+        private BitmapSource bitmapSource;
 
         public ScreenReactView(MainWindow mainWnd)
         {
@@ -99,7 +100,8 @@ namespace WindowCapture.ScreenSelect
             screenDPI = GetScreenDPI();
             InitializeComponent();
             // 设置canvas的背景为当前截图
-            canvas.Background = new ImageBrush(ControlsHelper.Capture());
+            bitmapSource = ControlsHelper.Capture();
+            canvas.Background = new ImageBrush(bitmapSource);
             // 宽高点完，实现初始化蒙层效果
             _rectangleLeft.Width = canvas.Width;
             _rectangleLeft.Height = canvas.Height;
@@ -134,6 +136,7 @@ namespace WindowCapture.ScreenSelect
             //dpi.dpiY = (uint)size.Height;
             ScreenExtensions.GetDpi(x, y, DpiType.Effective, out dpi.dpiX, out dpi.dpiY);
 
+            
             dpi.scaleX = (float)((double)dpi.dpiX / 0.95999997854232788 / 100.0);
             dpi.scaleY = (float)((double)dpi.dpiY / 0.95999997854232788 / 100.0);
             return dpi;
@@ -200,12 +203,14 @@ namespace WindowCapture.ScreenSelect
                 screenDPI.dpiX, screenDPI.dpiY, PixelFormats.Default);
             source.Render((Visual)canvas);
             // 屏幕等比截图需要考虑缩放率进行等比放大截图区域
-            var realrect = new Int32Rect(
-                (int)(rect.X * screenDPI.scaleX),
-                (int)(rect.Y * screenDPI.scaleY),
-                (int)(rect.Width * screenDPI.scaleX),
-                (int)(rect.Height * screenDPI.scaleY));
-            return new CroppedBitmap((BitmapSource)source, realrect);
+            //var realrect = new Int32Rect(
+            //    (int)(rect.X * screenDPI.scaleX),
+            //    (int)(rect.Y * screenDPI.scaleY),
+            //    (int)(rect.Width * screenDPI.scaleX),
+            //    (int)(rect.Height * screenDPI.scaleY));
+            var realrect = new Int32Rect(x, y, w, h);
+            
+            return new CroppedBitmap(bitmapSource, realrect);
         }
 
         private void ButtonCancel_Click(object sender, RoutedEventArgs e)
