@@ -23,7 +23,6 @@ namespace WindowCapture.ScreenSelect
             Application.Current.Dispatcher.Invoke(new Action(delegate
             {
                 ScreenReactView screenWindow = new ScreenReactView(mainWnd);
-                // ScreenWindow screenWindow = new ScreenWindow(mainWnd);
                 screenWindow.ScreenShootCompleted += ScreenCaptureCompleted;
                 screenWindow.ScreenShootCanceled += ScreenCaptureCanceled;
                 screenWindow.Show();
@@ -38,7 +37,7 @@ namespace WindowCapture.ScreenSelect
 
         private void ScreenCaptureCompleted(int x, int y, int w, int h)
         {
-            this.vm.ShowMessage = string.Format("录屏区域设置完成：（{2}, {3}），宽*高：{0}x{1}", w, h, x, y);
+            this.vm.ShowMessage = string.Format("Screen select finished：（{0}, {1}），width*height：{2}x{3}", x, y, w, h);
             mainWnd.Show();
             mainWnd.Activate();
             mainWnd.WindowState = WindowState.Normal;
