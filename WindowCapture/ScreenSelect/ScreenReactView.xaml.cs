@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -136,7 +137,7 @@ namespace WindowCapture.ScreenSelect
             //dpi.dpiY = (uint)size.Height;
             ScreenExtensions.GetDpi(x, y, DpiType.Effective, out dpi.dpiX, out dpi.dpiY);
 
-            
+
             dpi.scaleX = (float)((double)dpi.dpiX / 0.95999997854232788 / 100.0);
             dpi.scaleY = (float)((double)dpi.dpiY / 0.95999997854232788 / 100.0);
             return dpi;
@@ -196,10 +197,11 @@ namespace WindowCapture.ScreenSelect
             _rectangleRight.Visibility = Visibility.Collapsed;
             _rectangleBottom.Visibility = Visibility.Collapsed;
             DpiScale dpiScale = VisualTreeHelper.GetDpi(canvas);
+
             // 屏幕等比截图需要考虑缩放率进行等比放大canvas
-            var source = new RenderTargetBitmap(
-                (int)(canvas.Width * screenDPI.scaleX),
-                (int)(canvas.Height * screenDPI.scaleY),
+            int wid = (int)(canvas.Width * screenDPI.scaleX);
+            int hei = (int)(canvas.Height * screenDPI.scaleY);
+            var source = new RenderTargetBitmap(wid, hei,
                 screenDPI.dpiX, screenDPI.dpiY, PixelFormats.Default);
             source.Render((Visual)canvas);
             // 屏幕等比截图需要考虑缩放率进行等比放大截图区域
@@ -208,9 +210,11 @@ namespace WindowCapture.ScreenSelect
             //    (int)(rect.Y * screenDPI.scaleY),
             //    (int)(rect.Width * screenDPI.scaleX),
             //    (int)(rect.Height * screenDPI.scaleY));
+            // var realrect = new Int32Rect(10, 10, wid, hei);
             var realrect = new Int32Rect(x, y, w, h);
-            
-            return new CroppedBitmap(bitmapSource, realrect);
+
+            // return new CroppedBitmap(source, realrect);  // 用这个会有些问题，why?
+            return new CroppedBitmap(bitmapSource, realrect); 
         }
 
         private void ButtonCancel_Click(object sender, RoutedEventArgs e)
