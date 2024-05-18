@@ -1,9 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using static WindowCapture.Framework.WindowHelper.NativeMethods;
+using System.Windows.Controls;
+using System.Windows.Media.Imaging;
+using System.Windows.Media;
+using Microsoft.Win32;
 
 namespace WindowCapture.ScreenSelect
 {
@@ -11,6 +17,7 @@ namespace WindowCapture.ScreenSelect
     {
         private MainWindow mainWnd;
         private MainViewModel vm;
+        private ScreenReactView screenWindow;
 
         public ScreenReactSelect(MainWindow mainWindow, MainViewModel vm)
         {
@@ -20,9 +27,9 @@ namespace WindowCapture.ScreenSelect
 
         public void Capture()
         {
-            Application.Current.Dispatcher.Invoke(new Action(delegate
+            System.Windows.Application.Current.Dispatcher.Invoke(new Action(delegate
             {
-                ScreenReactView screenWindow = new ScreenReactView(mainWnd);
+                screenWindow = new ScreenReactView(mainWnd);
                 screenWindow.ScreenShootCompleted += ScreenCaptureCompleted;
                 screenWindow.ScreenShootCanceled += ScreenCaptureCanceled;
                 screenWindow.Show();
@@ -41,6 +48,24 @@ namespace WindowCapture.ScreenSelect
             mainWnd.Show();
             mainWnd.Activate();
             mainWnd.WindowState = WindowState.Normal;
+
+            var dlg = new SaveFileDialog();
+            dlg.FileName = $"ScreenCapture{DateTime.Now.ToString("yyyyMMddHHmmss")}.jpg";
+            dlg.DefaultExt = ".jpg";
+            dlg.Filter = "image file|*.jpg";
+
+            if (dlg.ShowDialog() == true)
+            {
+                BitmapEncoder pngEncoder = new PngBitmapEncoder();
+                pngEncoder.Frames.Add(BitmapFrame.Create(screenWindow.CutBitmap(x, y, w, h)));
+                using (var fs = File.OpenWrite(dlg.FileName))
+                {
+                    pngEncoder.Save(fs);
+                    fs.Dispose();
+                    fs.Close();
+                }
+            }
         }
+
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -13,10 +15,31 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using WindowCapture.Framework;
+using static WindowCapture.Framework.WindowHelper;
 using Size = System.Drawing.Size;
-
 namespace WindowCapture.ScreenSelect
 {
+
+    public static class ScreenExtensions
+    {
+        public static void GetDpi(int x, int y, DpiType dpiType, out uint dpiX, out uint dpiY)
+        {
+            var pnt = new System.Drawing.Point(1, 1);
+            var mon = MonitorFromPoint(pnt, 2);
+            GetDpiForMonitor(mon, dpiType, out dpiX, out dpiY);
+        }
+        [DllImport(Win32.User32)]
+        private static extern IntPtr MonitorFromPoint([In] System.Drawing.Point pt, [In] uint dwFlags);
+        [DllImport(Win32.Shcore)]
+        private static extern IntPtr GetDpiForMonitor([In] IntPtr hmonitor, [In] DpiType dpiType, [Out] out uint dpiX, [Out] out uint dpiY);
+    }
+    public enum DpiType
+    {
+        Effective = 0,
+        Angular = 1,
+        Raw = 2,
+    }
+
     public struct ScreenDPI
     {
         public uint dpiX;
@@ -72,7 +95,7 @@ namespace WindowCapture.ScreenSelect
         public ScreenReactView(MainWindow mainWnd)
         {
             Size size = WindowHelper.GetMonitorSize();
-            
+
             screenDPI = GetScreenDPI();
             InitializeComponent();
             // 设置canvas的背景为当前截图
@@ -102,11 +125,17 @@ namespace WindowCapture.ScreenSelect
         {
             ScreenDPI dpi = new ScreenDPI();
             Size size = WindowHelper.GetMonitorSize();
-            // Screen.AllScreens[screenIndex].GetDpi(DpiType.Effective, out dpi.dpiX, out dpi.dpiY);
-            dpi.dpiX = (uint)size.Width;
-            dpi.dpiY = (uint)size.Height;
-            dpi.scaleX = (dpi.dpiX / 0.96f) / 100;
-            dpi.scaleY = (dpi.dpiY / 0.96f) / 100;
+
+            int y = 2;
+            int x = 2;
+
+
+            //dpi.dpiX = (uint)size.Width;
+            //dpi.dpiY = (uint)size.Height;
+            ScreenExtensions.GetDpi(x, y, DpiType.Effective, out dpi.dpiX, out dpi.dpiY);
+
+            dpi.scaleX = (float)((double)dpi.dpiX / 0.95999997854232788 / 100.0);
+            dpi.scaleY = (float)((double)dpi.dpiY / 0.95999997854232788 / 100.0);
             return dpi;
         }
 
@@ -153,6 +182,30 @@ namespace WindowCapture.ScreenSelect
                 ScreenShootCompleted((int)(rect.TopLeft.X * ratio), (int)(rect.TopLeft.Y * ratio),
                     (int)(rect.Width * ratio), (int)(rect.Height * ratio));
 
+        }
+
+        public CroppedBitmap CutBitmap(int x, int y, int w, int h)
+        {
+            _border.Visibility = Visibility.Collapsed;
+            _editBar.Visibility = Visibility.Collapsed;
+            _rectangleLeft.Visibility = Visibility.Collapsed;
+            _rectangleTop.Visibility = Visibility.Collapsed;
+            _rectangleRight.Visibility = Visibility.Collapsed;
+            _rectangleBottom.Visibility = Visibility.Collapsed;
+            DpiScale dpiScale = VisualTreeHelper.GetDpi(canvas);
+            // 屏幕等比截图需要考虑缩放率进行等比放大canvas
+            var source = new RenderTargetBitmap(
+                (int)(canvas.Width * screenDPI.scaleX),
+                (int)(canvas.Height * screenDPI.scaleY),
+                screenDPI.dpiX, screenDPI.dpiY, PixelFormats.Default);
+            source.Render((Visual)canvas);
+            // 屏幕等比截图需要考虑缩放率进行等比放大截图区域
+            var realrect = new Int32Rect(
+                (int)(rect.X * screenDPI.scaleX),
+                (int)(rect.Y * screenDPI.scaleY),
+                (int)(rect.Width * screenDPI.scaleX),
+                (int)(rect.Height * screenDPI.scaleY));
+            return new CroppedBitmap((BitmapSource)source, realrect);
         }
 
         private void ButtonCancel_Click(object sender, RoutedEventArgs e)
@@ -406,7 +459,7 @@ namespace WindowCapture.ScreenSelect
             if (adornerLayer != null) return;
             _border.Opacity = 1;
             adornerLayer = AdornerLayer.GetAdornerLayer(_border);
-            
+
             screenCutAdorner = new ScreenCutAdorner(_border);
             screenCutAdorner.PreviewMouseDown += (s, e) =>
             {
