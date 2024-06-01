@@ -24,6 +24,11 @@
                     Margin="5,0,0,0" Width="100" Height="30"
                     Click="ScreenRecordRectCallback"
                     Content="Screen Capture"/>
+
+                <Button x:Name="SendFileButton"
+                        Margin="5,0,0,0" Width="100" Height="30"
+                        Click="SendFileCallback"
+                        Content="Send Files"/>
                 <!--
                 <Button x:Name="ScreenRecordRectButton" Width="30" Height="30"
                         HorizontalAlignment="Right" 

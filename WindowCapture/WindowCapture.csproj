@@ -16,6 +16,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="InTheHand.Net.Bluetooth" Version="4.1.43" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Resources\cancel.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
